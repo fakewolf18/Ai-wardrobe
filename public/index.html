@@ -122,6 +122,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const url = 'https://aiwardrobe.vercel.app/'
             const imageUpload = document.getElementById('image-upload');
             const imagePreview = document.getElementById('image-preview');
             const occasionInput = document.getElementById('occasion');
@@ -212,7 +213,7 @@
                 showLoading();
 
                 try {
-                    const response = await fetch('http://localhost:3000/analyze-wardrobe', {
+                    const response = await fetch(url+'/analyze-wardrobe', {
                         method: 'POST',
                         body: formData
                     });
