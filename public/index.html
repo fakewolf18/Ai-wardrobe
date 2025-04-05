@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Wardrobe System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center mb-6">AI Wardrobe System</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Input Section -->
+            <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Input</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="image-upload" class="block text-sm font-medium mb-1">
+                            Upload Images (Select multiple)
+                        </label>
+                        <input 
+                            id="image-upload" 
+                            type="file" 
+                            accept="image/*"
+                            multiple
+                            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+                        >
+                        <div id="image-preview" class="grid grid-cols-2 gap-2 mt-2"></div>
+                    </div>
+                    <div>
+                        <label for="occasion" class="block text-sm font-medium mb-1">
+                            Occasion
+                        </label>
+                        <input 
+                            id="occasion"
+                            type="text"
+                            placeholder="e.g., party, casual, formal"
+                            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+                        >
+                    </div>
+                    <div>
+                        <label for="skin-tone" class="block text-sm font-medium mb-1">
+                            Skin Tone
+                        </label>
+                        <input 
+                            id="skin-tone"
+                            type="text"
+                            placeholder="e.g., fair, medium, dark"
+                            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+                        >
+                    </div>
+                    <div>
+                        <label for="gender" class="block text-sm font-medium mb-1">
+                            Gender
+                        </label>
+                        <input 
+                            id="gender"
+                            type="text"
+                            placeholder="e.g., male, female, non-binary"
+                            class="w-full bg-gray-800 text-white border border-gray-700 rounded p-2"
+                        >
+                    </div>
+                    <button 
+                        id="process-button"
+                        class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Analyze Wardrobe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4">Analysis Result</h2>
+                <div id="output-container" class="space-y-4">
+                    <div id="outfit-section" class="hidden">
+                        <h3 class="text-lg font-semibold mb-2">Suggested Outfit</h3>
+                        <div class="space-y-2">
+                            <div class="flex">
+                                <span class="font-medium w-24">Top:</span>
+                                <span id="outfit-top" class="flex-1"></span>
+                            </div>
+                            <div class="flex">
+                                <span class="font-medium w-24">Bottom:</span>
+                                <span id="outfit-bottom" class="flex-1"></span>
+                            </div>
+                            <div class="flex">
+                                <span class="font-medium w-24">Shoes:</span>
+                                <span id="outfit-shoes" class="flex-1"></span>
+                            </div>
+                            <div class="flex">
+                                <span class="font-medium w-24">Accessories:</span>
+                                <span id="outfit-accessories" class="flex-1"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="reason-section" class="hidden">
+                        <h3 class="text-lg font-semibold mb-2">Styling Rationale</h3>
+                        <p id="outfit-reason" class="text-gray-300"></p>
+                    </div>
+                    <div id="suitability-section" class="hidden">
+                        <h3 class="text-lg font-semibold mb-2">Occasion Suitability</h3>
+                        <p id="outfit-suitability" class="text-gray-300"></p>
+                    </div>
+                    <div id="loading" class="hidden">
+                        <div class="animate-pulse flex space-x-4">
+                            <div class="flex-1 space-y-4 py-1">
+                                <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+                                <div class="space-y-2">
+                                    <div class="h-4 bg-gray-700 rounded"></div>
+                                    <div class="h-4 bg-gray-700 rounded w-5/6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="error-message" class="hidden text-red-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageUpload = document.getElementById('image-upload');
+            const imagePreview = document.getElementById('image-preview');
+            const occasionInput = document.getElementById('occasion');
+            const skinToneInput = document.getElementById('skin-tone');
+            const genderInput = document.getElementById('gender');
+            const processButton = document.getElementById('process-button');
+            const loadingElement = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const outfitSection = document.getElementById('outfit-section');
+            const reasonSection = document.getElementById('reason-section');
+            const suitabilitySection = document.getElementById('suitability-section');
+
+            function showLoading() {
+                loadingElement.classList.remove('hidden');
+                errorMessage.classList.add('hidden');
+                outfitSection.classList.add('hidden');
+                reasonSection.classList.add('hidden');
+                suitabilitySection.classList.add('hidden');
+            }
+
+            function hideLoading() {
+                loadingElement.classList.add('hidden');
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('hidden');
+                outfitSection.classList.add('hidden');
+                reasonSection.classList.add('hidden');
+                suitabilitySection.classList.add('hidden');
+            }
+
+            function updateOutput(data) {
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                // Update outfit details
+                document.getElementById('outfit-top').textContent = data.outfit.top;
+                document.getElementById('outfit-bottom').textContent = data.outfit.bottom;
+                document.getElementById('outfit-shoes').textContent = data.outfit.shoes;
+                document.getElementById('outfit-accessories').textContent = data.outfit.accessories;
+                document.getElementById('outfit-reason').textContent = data.reason;
+                document.getElementById('outfit-suitability').textContent = data.occasion_suitability;
+
+                // Show all sections
+                outfitSection.classList.remove('hidden');
+                reasonSection.classList.remove('hidden');
+                suitabilitySection.classList.remove('hidden');
+            }
+
+            imageUpload.addEventListener('change', function(e) {
+                imagePreview.innerHTML = '';
+                const files = Array.from(e.target.files);
+                
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'w-full h-32 object-cover rounded';
+                        const div = document.createElement('div');
+                        div.appendChild(img);
+                        imagePreview.appendChild(div);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            processButton.addEventListener('click', async function() {
+                const formData = new FormData();
+                const files = Array.from(imageUpload.files);
+                
+                if (files.length === 0) {
+                    showError('Please select at least one image');
+                    return;
+                }
+
+                files.forEach(file => {
+                    formData.append('images', file);
+                });
+                
+                formData.append('occasion', occasionInput.value || 'party');
+                formData.append('skin_tone', skinToneInput.value || 'fair');
+                formData.append('gender', genderInput.value || 'male');
+
+                showLoading();
+
+                try {
+                    const response = await fetch('http://localhost:3000/analyze-wardrobe', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    hideLoading();
+                    updateOutput(data);
+                } catch (error) {
+                    hideLoading();
+                    showError('Error analyzing wardrobe: ' + error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
