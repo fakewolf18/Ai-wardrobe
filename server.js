@@ -94,10 +94,10 @@ app.post("/analyze-wardrobe", upload.array("images", 10), async (req, res) => {
       Provide your response in this exact JSON format:
       {
         "outfit": {
-          "top": "Detailed description of the top piece",
-          "bottom": "Detailed description of the bottom piece",
-          "shoes": "Detailed description of the footwear",
-          "accessories": "Suggested complementary accessories"
+          "top": "color_name_of_top_gender in that format",
+          "bottom": "color_name_of_bottom_gender in that format",
+          "shoes": "color_name_of_footwear_gender in this format",
+          "accessories": "color_name_of_accessory"
         },
         "reason": "Detailed explanation of why this combination works well together",
         "occasion_suitability": "Explanation of how well this outfit matches the specified occasion"
