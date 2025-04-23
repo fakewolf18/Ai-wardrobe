@@ -176,4 +176,4 @@ details: error.message,
 
 app.listen(port, () => {
 console.log(Wardrobe analyzer API running on port ${port});
-}); 
+});
