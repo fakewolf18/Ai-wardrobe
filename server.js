@@ -19,7 +19,7 @@ const port = 3000;
 // Configure Google AI
 
 const genAI = new GoogleGenerativeAI(
-      ${{ secrets.GEMINI_API }}
+      "AIzaSyCIOEpGrtWFXVD8Cnbxp7gsBpmuXFhU_GU"
 
 );
 
