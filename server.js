@@ -190,13 +190,13 @@ app.post("/analyze-wardrobe", upload.array("images", 10), async (req, res) => {
 
         "outfit": {
 
-          "top": "color_name_of_top_gender in that format",
+          "top": "recommended top",
 
-          "bottom": "color_name_of_bottom_gender in that format",
+          "bottom": "recommended bottom",
 
-          "shoes": "color_name_of_footwear_gender in this format",
+          "shoes": "recommended shoes if included in user input only",
 
-          "accessories": "color_name_of_accessory"
+          "accessories": "recommended accessory if included in user input only"
 
         },
 
@@ -218,6 +218,7 @@ app.post("/analyze-wardrobe", upload.array("images", 10), async (req, res) => {
 
       4. Ensure all explanations are clear and specific
 
+      5. Ensure only articles given in input are recommended to user
     `;
 
 
