@@ -19,8 +19,7 @@ const port = 3000;
 // Configure Google AI
 
 const genAI = new GoogleGenerativeAI(
-
-  "AIzaSyB0UybQU1-akrq4VRu3BMpovhW9oDkl4No"
+      ${{ secrets.GEMINI_API }}
 
 );
 
@@ -190,14 +189,13 @@ app.post("/analyze-wardrobe", upload.array("images", 10), async (req, res) => {
 
         "outfit": {
 
-          "top": "recommended top",
+          "top": "recommended top in plain",
 
           "bottom": "recommended bottom",
-
+          
           "shoes": "recommended shoes if included in user input only",
 
           "accessories": "recommended accessory if included in user input only"
-
         },
 
         "reason": "Detailed explanation of why this combination works well together",
@@ -223,7 +221,7 @@ app.post("/analyze-wardrobe", upload.array("images", 10), async (req, res) => {
 
 
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const result = await model.generateContent([prompt, ...imageParts]);
 
@@ -354,3 +352,5 @@ app.listen(port, () => {
   console.log(`Wardrobe analyzer API running on port ${port}`);
 
 });
+
+
